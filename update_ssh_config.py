@@ -16,8 +16,7 @@ headers = {"secret-key": secret_key, "tags": "all"}
 ssh_dir = os.path.expanduser('~/.ssh/iwe')
 ssh_config_file = os.path.expanduser('~/.ssh/config')
 
-ssh_config_template = "Host {}\n\tuser root\n\tIdentityFile {}\n\tHostName {}\n\tUserKnownHostsFile
-/dev/null\n\tStrictHostKeyChecking no\n"
+ssh_config_template = "Host {}\n\tuser root\n\tIdentityFile {}\n\tHostName {}\n\tUserKnownHostsFile /dev/null\n\tStrictHostKeyChecking no\n"
 
 hosts_file_path = os.path.expanduser('~/dev/iwesible/hosts')
 
