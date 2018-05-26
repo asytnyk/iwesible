@@ -14,8 +14,11 @@ url = "https://beta.iwe.cloud/backend/servers/query/by-tags"
 headers = {"secret-key": secret_key, "tags": "all"}
 
 ssh_dir = os.path.expanduser('~/.ssh/iwe')
+ssh_config_file = os.path.expanduser('~/.ssh/config')
 
 ssh_config_template = "Host {}\n\tuser root\n\tIdentityFile {}\n\tHostName {}\n"
+
+hosts_file_path = os.path.expanduser('~/dev/iwesible/hosts')
 
 def get_server_list():
     try:
@@ -32,14 +35,26 @@ def get_server_list():
 def main():
     servers = get_server_list()
 
-    for server in servers:
-        id_rsa_path = ssh_dir + "/id_rsa_{}".format(server)
-        with open(id_rsa_path, 'w+') as ssh_priv:
-            ssh_priv.write(servers[server]['sshkey_priv'])
+    if not servers:
+        print("Exiting...")
+        sys.exit(-1)
 
-        print(ssh_config_template.format(server,
-                ssh_dir + "/id_rsa_{}".format(server),
-                servers[server]['vpn_ipv4']))
+    with open(hosts_file_path, 'w+') as hosts_file, \
+    open(ssh_config_file, 'w+') as ssh_conf:
+        hosts_file.write("[all]\n")
+
+        for server in servers:
+            id_rsa_path = ssh_dir + "/id_rsa_{}".format(server)
+            with open(id_rsa_path, 'w+') as ssh_priv:
+                ssh_priv.write(servers[server]['sshkey_priv'])
+            os.chmod(id_rsa_path, 0o600)
+
+            ssh_conf.write(ssh_config_template.format(server,
+                    ssh_dir + "/id_rsa_{}".format(server),
+                    servers[server]['vpn_ipv4']))
+            hosts_file.write(server)
+
+    os.chmod(ssh_config_file, 0o600)
 
 if __name__ == "__main__":
     main()
