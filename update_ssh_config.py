@@ -52,7 +52,7 @@ def main():
             ssh_conf.write(ssh_config_template.format(server,
                     ssh_dir + "/id_rsa_{}".format(server),
                     servers[server]['vpn_ipv4']))
-            hosts_file.write(server)
+            hosts_file.write("{}\n".format(server))
 
     os.chmod(ssh_config_file, 0o600)
 
