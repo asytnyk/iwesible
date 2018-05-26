@@ -1,2 +1,4 @@
+*.swp
 *.retry
+hosts
 venv/
