@@ -1,5 +1,5 @@
 ---
- - hosts: notes
+ - hosts: all
    tasks:
         - dnf:
                 name: '@virtualization'
