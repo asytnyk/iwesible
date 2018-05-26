@@ -46,6 +46,15 @@
                   name: systemd-resolved
                   enabled: yes
 
+          # Some silly bug was preventing openvpn to access resolv.conf
+          # See: https://bugzilla.redhat.com/show_bug.cgi?id=1505106
+          - ini_file:
+                  path: /usr/lib/systemd/system/systemd-resolved.service
+                  section: Service
+                  option: ReadWritePaths
+                  value: '/var/run/systemd/system'
+                  no_extra_spaces: yes
+
           # Unfortunately systemd-networkd is not getting the hostname from the DHCP
           # This gets the hostname from the DNS
           #- shell: "hostnamectl set-hostname $(host $(ip a s {{ ansible_default_ipv4.interface }}| awk '/inet /{print $2}'|cut -d '/' -f 1)|awk '{ print $5 }')"
