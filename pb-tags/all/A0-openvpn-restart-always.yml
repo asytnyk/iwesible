@@ -1,0 +1,16 @@
+---
+- hosts: all
+  tasks:
+          - ini_file:
+                  path: /usr/lib/systemd/system/openvpn-client@.service
+                  section: Service
+                  option: Restart
+                  value: "always"
+                  no_extra_spaces: yes
+
+          - systemd:
+                  name: openvpn-client@iwe-beta
+                  daemon_reload: yes
+                  enabled: yes
+                  state: restarted
+
