@@ -8,4 +8,5 @@
 - import_playbook: F-configure-plymouth.yml
 - import_playbook: G-add-docker.yml
 - import_playbook: H-add-virtualization.yml 
+- import_playbook: J-ganglia-gmond.yml
 - import_playbook: I-update.yml
