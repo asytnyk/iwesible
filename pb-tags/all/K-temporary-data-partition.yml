@@ -1,0 +1,53 @@
+---
+- hosts: all
+  tasks:
+        - name: Get blockdevice hosting /
+          shell: "df|grep /$|awk '{print $1}'|sed 's/[0-9]//g'"
+          register: system_disk
+
+        - name: "Get Disklabel of {{ system_disk.stdout }}"
+          shell: "fdisk -l {{ system_disk.stdout }}|grep Disklabel|awk '{print $3}'"
+          register: disk_label
+
+        - name: Check if partition number 4 exists
+          stat:
+                path: "{{ system_disk.stdout }}4"
+          register: data_partition
+
+        - name: Create partition 4 in a very unreliable way (dos)
+          shell: 'echo -e "n\np\n\n\nw\n"|fdisk {{ system_disk.stdout }}'
+          failed_when: result.rc != 1
+          register: result
+          when: (data_partition.stat.exists == False) and
+                (disk_label.stdout == "dos")
+
+        - name: Create partition 4 in a very unreliable way (gpt)
+          shell: 'echo -e "n\n4\n\n\nw\n"|fdisk {{ system_disk.stdout }}'
+          failed_when: result.rc != 1
+          register: result
+          when: (data_partition.stat.exists == False) and
+                (disk_label.stdout == "gpt")
+
+        - name: Calling partprobe
+          shell: 'partprobe'
+          ignore_errors: yes
+          when: data_partition.stat.exists == False
+
+        - name: Format partition 4
+          shell: 'mkfs.ext4 -L "iwe_data" "{{ system_disk.stdout }}4"'
+          when: data_partition.stat.exists == False
+
+        - name: Add it to fstab
+          mount:
+                path: /mnt/data
+                src: LABEL=iwe_data
+                fstype: ext4
+                state: mounted
+
+        - name: Make it world writable
+          file:
+                path: /mnt/data
+                mode: 0777
+                state: directory
+                
+        
