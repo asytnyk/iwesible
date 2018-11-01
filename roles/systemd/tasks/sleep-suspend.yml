@@ -1,5 +1,5 @@
 - name: Ignore suspend, hibernate and lid keys
-- ini_file:
+  ini_file:
     path: /etc/systemd/logind.conf
     section: Login
     option: "{{ item }}"
