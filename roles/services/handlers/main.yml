@@ -1,2 +1,0 @@
-- name: Turn on NTP
-  command: timedatectl set-ntp true
