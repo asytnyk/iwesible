@@ -1,0 +1,84 @@
+- name: Install git
+  dnf:
+    name: [ "git" ]
+    state: present
+  tags:
+    - ambitorio-ipfs
+    - packages
+
+- name: Setup root's .ssh directory
+  file:
+    name: /root/.ssh
+    mode: 0700
+    state: directory
+  tags:
+    - ambitorio-ipfs
+
+- name: Setup GitHub read-only private key
+  copy:
+    src: git-ssh/id_ecdsa
+    dest: /root/.ssh/id_ecdsa
+    mode: 0600
+  tags:
+    - ambitorio-ipfs
+
+- name: Setup GitHub read-only public key
+  copy:
+    src: git-ssh/id_ecdsa.pub
+    dest: /root/.ssh/id_ecdsa.pub
+    mode: 0644
+  tags:
+    - ambitorio-ipfs
+
+- name: Clone iwe_ipfs_docker
+  git:
+    accept_hostkey: yes
+    clone: yes
+    repo: git@github.com:iwe/iwe_ipfs_docker.git
+    dest: /home/ambitorio/iwe_ipfs_docker
+  notify:
+    - Start IPFS docker
+  tags:
+    - ambitorio-ipfs
+
+# This isn't necessary except to get the host key
+- name: Clone ambitorio_ipfs
+  git:
+    accept_hostkey: yes
+    clone: yes
+    repo: git@bitbucket.org:jdieter/ambitorio_ipfs.git
+    dest: /home/ambitorio/iwe_ipfs_docker/ambitorio_ipfs
+  notify:
+    - Start IPFS docker
+  tags:
+    - ambitorio-ipfs
+
+- name: Make sure docker service is enabled and started
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+  tags:
+    - ambitorio-ipfs
+
+- command: ./build.sh setup
+  args:
+    chdir: /home/ambitorio/iwe_ipfs_docker/docker
+  register: build_setup
+  changed_when: build_setup.rc == 2
+  failed_when: build_setup.rc == 1
+  notify:
+    - Start IPFS docker
+  tags:
+    - ambitorio-ipfs
+
+- command: ./build.sh
+  args:
+    chdir: /home/ambitorio/iwe_ipfs_docker/docker
+  register: build
+  changed_when: build_setup.rc == 2
+  failed_when: build_setup.rc == 1
+  notify:
+    - Start IPFS docker
+  tags:
+    - ambitorio-ipfs
