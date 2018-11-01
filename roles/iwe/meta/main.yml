@@ -11,4 +11,3 @@ dependencies:
   - docker
   - virt
   - ganglia-gmond
-  - partition
