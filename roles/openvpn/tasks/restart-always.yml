@@ -1,0 +1,11 @@
+- name: Set openvpn client to restart always
+  ini_file:
+    path: /usr/lib/systemd/system/openvpn-client@.service
+    section: Service
+    option: Restart
+    value: "always"
+    no_extra_spaces: yes
+  notify:
+    - Reload openvpn
+  tags:
+    - openvpn

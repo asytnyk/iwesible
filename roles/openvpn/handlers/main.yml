@@ -1,0 +1,6 @@
+- name: Reload openvpn
+  systemd:
+    name: openvpn-client@iwe-beta
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
