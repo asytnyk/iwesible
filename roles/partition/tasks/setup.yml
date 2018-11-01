@@ -1,12 +1,14 @@
 - name: Get blockdevice hosting /
   shell: "df|grep /$|awk '{print $1}'|sed 's/[0-9]//g'"
   register: system_disk
+  changed_when: false
   tags:
     - partition
 
 - name: "Get Disklabel of {{ system_disk.stdout }}"
   shell: "fdisk -l {{ system_disk.stdout }}|grep Disklabel|awk '{print $3}'"
   register: disk_label
+  changed_when: false
   tags:
     - partition
 
