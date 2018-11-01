@@ -1,0 +1,2 @@
+- name: Install openvpn selinux module
+  command: semodule -i /root/openvpn-net_conf.pp

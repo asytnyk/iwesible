@@ -1,0 +1,91 @@
+- name: Create /etc/systemd/network
+  file:
+    path: /etc/systemd/network
+    state: directory
+  tags:
+    - systemd-networkd
+
+- name: Setup {{ ansible_default_ipv4.interface }} network
+  ini_file:
+    path: /etc/systemd/network/{{ ansible_default_ipv4.interface }}.network
+    section: Match
+    option: Name
+    value: "{{ ansible_default_ipv4.interface }}"
+    no_extra_spaces: yes
+  tags:
+    - systemd-networkd
+
+- name: Turn on DHCP for {{ ansible_default_ipv4.interface }}
+  ini_file:
+    path: /etc/systemd/network/{{ ansible_default_ipv4.interface }}.network
+    section: Network
+    option: DHCP
+    value: 'yes'
+    no_extra_spaces: yes
+  tags:
+    - systemd-networkd
+
+- name: Turn on IP forwarding for {{ ansible_default_ipv4.interface }}
+  ini_file:
+    path: /etc/systemd/network/{{ ansible_default_ipv4.interface }}.network
+    section: Network
+    option: IPForward
+    value: 'yes'
+    no_extra_spaces: yes
+  tags:
+    - systemd-networkd
+
+- name: Make /etc/resolv.conf a symbolic link
+  file:
+    dest: /etc/resolv.conf
+    src: /run/systemd/resolve/resolv.conf
+    force: yes
+    state: link
+  tags:
+    - systemd-networkd
+
+- name: Disable NetworkManager
+  systemd:
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - NetworkManager.service
+    - NetworkManager-wait-online.service
+  tags:
+    - systemd-networkd
+
+- name: Enable systemd-networkd
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+  with_items:
+    - systemd-networkd.service
+    - systemd-resolved.service
+  tags:
+    - systemd-networkd
+
+# Some silly bug was preventing openvpn to access resolv.conf
+# See: https://bugzilla.redhat.com/show_bug.cgi?id=1505106
+- name: Give systemd-resolved read-write access to /var/run/systemd/system
+  ini_file:
+    path: /usr/lib/systemd/system/systemd-resolved.service
+    section: Service
+    option: ReadWritePaths
+    value: '/var/run/systemd/system'
+    no_extra_spaces: yes
+  tags:
+    - systemd-networkd
+
+# The above bug is still happening, so we have an selinux module that
+# grants access
+- name: Copy across selinux module to grant openvpn access to /var/run/systemd/system
+  copy:
+    src: openvpn-net_conf.pp
+    dest: /root/
+  notify:
+    - Install openvpn selinux module
+
+# Unfortunately systemd-networkd is not getting the hostname from the DHCP
+# This gets the hostname from the DNS
+#- shell: "hostnamectl set-hostname $(host $(ip a s {{ ansible_default_ipv4.interface }}| awk '/inet /{print $2}'|cut -d '/' -f 1)|awk '{ print $5 }')"
+
