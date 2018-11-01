@@ -53,6 +53,18 @@
   tags:
     - ambitorio-ipfs
 
+- name: Configure firewall for IPFS
+  firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  with_items:
+    - 4001/tcp
+  tags:
+    - firewall
+    - ambitorio-ipfs
+
 - name: Make sure docker service is enabled and started
   systemd:
     name: docker
