@@ -82,6 +82,8 @@
   copy:
     src: openvpn-net_conf.pp
     dest: /root/
+  tags:
+    - systemd-networkd
   notify:
     - Install openvpn selinux module
 
