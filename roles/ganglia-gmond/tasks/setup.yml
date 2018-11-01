@@ -1,0 +1,40 @@
+- name: Install ganglia-gmond packages
+  dnf:
+    name: [ "ganglia-gmond", "ganglia-gmond-python", "libselinux-python",
+            "libselinux-python3" ]
+    state: present
+  notify:
+    - Restart gmond
+  tags:
+    - packages
+    - ganglia-gmond
+
+- name: Configure firewall for ganglia-gmond
+  firewalld:
+    port: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  with_items:
+    - 8649/tcp
+    - 8649/udp
+  tags:
+    - firewall
+    - ganglia-gmond
+
+- name: Setup gmond.conf in /etc/ganglia
+  template:
+    src: gmond.conf
+    dest: /etc/ganglia/gmond.conf
+    backup: yes
+  notify:
+    - Restart gmond
+  tags:
+    - ganglia-gmond
+
+- name: Enable gmond server
+  systemd:
+    name: gmond
+    enabled: yes
+  notify:
+    - Restart gmond

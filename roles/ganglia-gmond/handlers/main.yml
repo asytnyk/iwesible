@@ -1,0 +1,4 @@
+- name: Restart gmond
+  systemd:
+    name: gmond
+    state: restarted
