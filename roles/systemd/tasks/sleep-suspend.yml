@@ -1,0 +1,17 @@
+- name: Ignore suspend, hibernate and lid keys
+- ini_file:
+    path: /etc/systemd/logind.conf
+    section: Login
+    option: "{{ item }}"
+    value: ignore
+    no_extra_spaces: yes
+  with_items:
+    - HandleSuspendKey
+    - HandleHibernateKey
+    - HandleLidSwitch
+    - HandleLidSwitchDocked
+  notify:
+    - Restart systemd-logind
+  tags:
+    - sleep
+    - systemd

@@ -1,1 +1,2 @@
 - include: "watchdog.yml"
+- include: "sleep-suspend.yml"
