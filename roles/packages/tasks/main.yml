@@ -1,1 +1,2 @@
 - include: "update.yml"
+- include: "requirements.yml"

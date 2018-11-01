@@ -1,10 +1,13 @@
 dependencies:
+  # Network stuff should be first to make sure we don't accidentally lose our
+  # network connection
   - openvpn
   - systemd-networkd
+  # Packages may have some prereqs for some of the other sections
+  - packages
   - fail2ban
   - systemd
   - services
   - docker
   - virt
-  - packages
   - ganglia-gmond

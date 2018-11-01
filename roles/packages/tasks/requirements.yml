@@ -1,0 +1,7 @@
+- name: Install packages required by more than one other section
+  dnf:
+    name: [ "python2-firewall", "python3-firewall", # Needed for all firewalld actions
+            "libselinux-python", "libselinux-python3" ] # Needed for all selinux actions
+    state: installed
+  tags:
+    - packages
