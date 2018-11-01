@@ -4,3 +4,4 @@ dependencies:
   - fail2ban
   - systemd
   - services
+  - docker
