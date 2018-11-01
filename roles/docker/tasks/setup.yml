@@ -1,10 +1,7 @@
 - name: Install docker packages
   dnf:
-    name: "{{ item }}"
+    name: [u'docker', u'docker-compose']
     state: present
-  with_items:
-    - docker
-    - docker-compose
   tags:
     - docker
 
