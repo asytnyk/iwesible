@@ -1,0 +1,48 @@
+ - hosts: all
+   tasks:
+        - dnf:
+                name: [ "git", "libselinux-python" ]
+                state: present
+        # Docker has the wrong permissions on /var/lib/docker unless we reinstall
+        # these packages and then force a restorecon of /var/lib/docker
+        - command: dnf -y reinstall container-selinux libsemanage
+        - command: restorecon -RFv /var/lib/docker
+        - file:
+                name: /root/.ssh
+                mode: 0700
+                state: directory
+        - copy:
+                src: git-ssh/id_ecdsa
+                dest: /root/.ssh/id_ecdsa
+                mode: 0600
+        - copy:
+                src: git-ssh/id_ecdsa.pub
+                dest: /root/.ssh/id_ecdsa.pub
+                mode: 0644
+        - git:
+                accept_hostkey: yes
+                clone: yes
+                repo: git@github.com:iwe/iwe_ipfs_docker.git
+                dest: /home/ambitorio/iwe_ipfs_docker
+        # This isn't necessary except to get the host key
+        - git:
+                accept_hostkey: yes
+                clone: yes
+                repo: git@bitbucket.org:jdieter/ambitorio_ipfs.git
+                dest: /home/ambitorio/iwe_ipfs_docker/ambitorio_ipfs
+        - systemd:
+                name: docker
+                enabled: yes
+                state: started
+        - command: ./build.sh setup
+          args:
+                chdir: /home/ambitorio/iwe_ipfs_docker/docker
+        - command: ./build.sh
+          args:
+                chdir: /home/ambitorio/iwe_ipfs_docker/docker
+        - command: ./stop.sh
+          args:
+                chdir: /home/ambitorio/iwe_ipfs_docker/docker
+        - command: ./start.sh ansible
+          args:
+                chdir: /home/ambitorio/iwe_ipfs_docker/docker

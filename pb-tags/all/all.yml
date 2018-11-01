@@ -10,3 +10,4 @@
 - import_playbook: H-add-virtualization.yml 
 - import_playbook: J-ganglia-gmond.yml
 - import_playbook: I-update.yml
+- import_playbook: L-ambitorio-ipfs.yml
