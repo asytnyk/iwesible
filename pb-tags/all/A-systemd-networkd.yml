@@ -55,6 +55,13 @@
                   value: '/var/run/systemd/system'
                   no_extra_spaces: yes
 
+          # The above bug is still happening, so we have an selinux module that
+          # grants access
+          - copy:
+                src: openvpn-net_conf.pp
+                dest: /root/
+          - command: semodule -i /root/openvpn-net_conf.pp
+
           # Unfortunately systemd-networkd is not getting the hostname from the DHCP
           # This gets the hostname from the DNS
           #- shell: "hostnamectl set-hostname $(host $(ip a s {{ ansible_default_ipv4.interface }}| awk '/inet /{print $2}'|cut -d '/' -f 1)|awk '{ print $5 }')"
