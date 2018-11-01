@@ -3,3 +3,4 @@ dependencies:
   - systemd-networkd
   - fail2ban
   - systemd
+  - services

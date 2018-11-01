@@ -1,0 +1,9 @@
+- name: Check NTP status
+  command: timedatectl -p NTP --value show
+  register: ntp
+  changed_when: ntp.stdout == "no"
+  notify:
+    - Turn on NTP
+  tags:
+    - services
+    - ntp
