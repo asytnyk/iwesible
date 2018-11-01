@@ -1,0 +1,44 @@
+- name: Install @virtualization group
+  dnf:
+    name: '@virtualization'
+    state: present
+  tags:
+    - dnf
+    - virt
+
+- name: Shutdown VMs on system shutdown
+  ini_file:
+    path: /etc/sysconfig/libvirt-guests
+    section: null
+    option: ON_SHUTDOWN
+    value: shutdown
+    no_extra_spaces: yes
+  tags:
+    - virt
+
+- name: Shut down a maximum of four VMs at the same time
+  ini_file:
+    path: /etc/sysconfig/libvirt-guests
+    section: null
+    option: PARALLEL_SHUTDOWN
+    value: 4
+    no_extra_spaces: yes
+  tags:
+    - virt
+
+- name: Set VM shutdown timeout to 60 seconds
+  ini_file:
+    path: /etc/sysconfig/libvirt-guests
+    section: null
+    option: SHUTDOWN_TIMEOUT
+    value: 60
+    no_extra_spaces: yes
+  tags:
+    - virt
+
+- name: Enable libvirt-guests service
+  systemd:
+    name: libvirt-guests.service
+    enabled: yes
+  tags:
+    - virt
