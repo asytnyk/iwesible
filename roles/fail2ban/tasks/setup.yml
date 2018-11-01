@@ -1,0 +1,23 @@
+- name: Install fail2ban
+  dnf:
+    name: 'fail2ban'
+    state: present
+  tags:
+    - fail2ban
+
+- name: Enable sshd in fail2ban configuration
+  ini_file:
+    path: /etc/fail2ban/jail.d/sshd.conf
+    section: sshd
+    option: enabled
+    value: true
+    no_extra_spaces: yes
+  tags:
+    - fail2ban
+
+- name: Enable fail2ban
+  systemd:
+    name: fail2ban.service
+    enabled: yes
+  tags:
+    - fail2ban
