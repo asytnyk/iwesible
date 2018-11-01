@@ -1,7 +1,6 @@
 - name: Install ganglia-gmond packages
   dnf:
-    name: [ "ganglia-gmond", "ganglia-gmond-python", "libselinux-python",
-            "libselinux-python3" ]
+    name: [ "ganglia-gmond", "ganglia-gmond-python" ]
     state: present
   notify:
     - Restart gmond
