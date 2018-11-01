@@ -1,3 +1,5 @@
+# Docker has the wrong permissions on /var/lib/docker unless we reinstall
+# certain packages and then force a restorecon of /var/lib/docker
 - name: check SELinux context of /var/lib/docker
   shell: ls -Zd /var/lib/docker | awk -F ':' '{ print $3 }'
   register: docker_context
