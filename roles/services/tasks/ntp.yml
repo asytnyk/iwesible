@@ -1,6 +1,6 @@
 - name: Turn on NTP
   command: timedatectl set-ntp true
-  changed_when: never
+  changed_when: false
   tags:
     - services
     - ntp
