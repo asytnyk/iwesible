@@ -1,0 +1,9 @@
+- name: check SELinux context of /var/lib/docker
+  shell: ls -Zd /var/lib/docker | awk -F ':' '{ print $3 }'
+  register: docker_context
+  changed_when: docker_context.stdout != "container_var_lib_t"
+  notify:
+    - Restore docker SELinux contexts
+  tags:
+    - docker
+    - selinux

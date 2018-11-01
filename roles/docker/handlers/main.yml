@@ -1,0 +1,7 @@
+- name: Reinstall container-selinux and libsemanage
+  command: dnf -y reinstall container-selinux libsemanage
+  listen: Restore docker SELinux contexts
+
+- name: Restore /var/lib/docker SELinux contexts
+  command: restorecon -RFv /var/lib/docker
+  listen: Restore docker SELinux contexts
