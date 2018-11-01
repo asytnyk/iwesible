@@ -1,9 +1,11 @@
-- command: ./stop.sh
+- name: Stop ambitorio-ipfs docker containers
+  command: ./stop.sh
   args:
     chdir: /home/ambitorio/iwe_ipfs_docker/docker
   listen: Start IPFS docker
 
-- command: ./start.sh ansible
+- name: Start ambitorio-ipfs docker containers
+  command: ./start.sh ansible
   args:
     chdir: /home/ambitorio/iwe_ipfs_docker/docker
   listen: Start IPFS docker

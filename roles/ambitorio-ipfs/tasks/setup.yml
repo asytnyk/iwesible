@@ -61,7 +61,8 @@
   tags:
     - ambitorio-ipfs
 
-- command: ./build.sh setup
+- name: Run ambitorio-ipfs build directory setup
+  command: ./build.sh setup
   args:
     chdir: /home/ambitorio/iwe_ipfs_docker/docker
   register: build_setup
@@ -72,7 +73,8 @@
   tags:
     - ambitorio-ipfs
 
-- command: ./build.sh
+- name: Build ambitorio-ipfs docker images
+  command: ./build.sh
   args:
     chdir: /home/ambitorio/iwe_ipfs_docker/docker
   register: build
