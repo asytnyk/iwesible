@@ -2,3 +2,4 @@ dependencies:
   - openvpn
   - systemd-networkd
   - fail2ban
+  - systemd

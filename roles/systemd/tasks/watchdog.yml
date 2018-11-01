@@ -1,0 +1,22 @@
+- name: Enable 20-second runtime watchdog
+  ini_file:
+    path: /etc/systemd/system.conf
+    section: Manager
+    option: RuntimeWatchdogSec
+    value: 20
+    no_extra_spaces: yes
+  tags:
+    - systemd
+    - watchdog
+
+- name: Enable 200-second shutdown watchdog
+  ini_file:
+    path: /etc/systemd/system.conf
+    section: Manager
+    option: ShutdownWatchdogSec
+    value: 200
+    no_extra_spaces: yes
+  tags:
+    - systemd
+    - watchdog
+
