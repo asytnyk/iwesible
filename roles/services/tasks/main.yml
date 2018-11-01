@@ -1,1 +1,2 @@
 - include: "ntp.yml"
+- include: "plymouth.yml"

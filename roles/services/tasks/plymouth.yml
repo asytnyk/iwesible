@@ -1,0 +1,9 @@
+- name: Check current plymouth theme
+  shell: cat /etc/plymouth/plymouthd.conf | grep -q "^Theme=details"
+  register: plymouth
+  changed_when: plymouth.rc != 0
+  notify:
+    - Set plymouth theme to details
+  tags:
+    - services
+    - plymouth

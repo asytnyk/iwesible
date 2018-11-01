@@ -1,0 +1,2 @@
+- name: Set plymouth theme to details
+  command: plymouth-set-default-theme details --rebuild-initrd
