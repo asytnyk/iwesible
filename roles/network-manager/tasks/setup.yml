@@ -17,6 +17,15 @@
   tags:
     - network-manager
 
+- name: Enable IP forwarding for IPv4
+  copy:
+    src: 90-iwe.conf
+    dest: /etc/sysctl.d
+  notify:
+    - Reload sysctl
+  tags:
+    - network-manager
+
 - name: Enable NetworkManager
   systemd:
     name: "{{ item }}"

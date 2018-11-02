@@ -13,3 +13,6 @@
 - name: Relabel /etc/resolv.conf
   command: restorecon -Rv /etc/resolv.conf
   listen: Make /etc/resolv.conf a regular file
+
+- name: Reload sysctl
+  command: sysctl --system
