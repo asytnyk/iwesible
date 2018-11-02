@@ -2,7 +2,7 @@ dependencies:
   # Network stuff should be first to make sure we don't accidentally lose our
   # network connection
   - openvpn
-  - systemd-networkd
+  - network-manager
   # Packages may have some prereqs for some of the other sections
   - packages
   - fail2ban

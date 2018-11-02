@@ -1,0 +1,43 @@
+#- name: Turn on IP forwarding for {{ ansible_default_ipv4.interface }}
+#  ini_file:
+#    path: /etc/systemd/network/{{ ansible_default_ipv4.interface }}.network
+#    section: Network
+#    option: IPForward
+#    value: 'yes'
+#    no_extra_spaces: yes
+#  tags:
+#    - systemd-networkd
+
+- name: Make /etc/resolv.conf a regular file
+  file:
+    dest: /etc/resolv.conf
+    state: file
+  tags:
+    - network-manager
+  notify:
+    - Relabel /etc/resolv.conf
+
+- name: Enable NetworkManager
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+  with_items:
+    - NetworkManager.service
+    - NetworkManager-wait-online.service
+  tags:
+    - network-manager
+
+- name: Disable systemd-networkd
+  systemd:
+    name: "{{ item }}"
+    enabled: no
+  with_items:
+    - systemd-networkd.service
+    - systemd-resolved.service
+  tags:
+    - network-manager
+
+# Unfortunately systemd-networkd is not getting the hostname from the DHCP
+# This gets the hostname from the DNS
+#- shell: "hostnamectl set-hostname $(host $(ip a s {{ ansible_default_ipv4.interface }}| awk '/inet /{print $2}'|cut -d '/' -f 1)|awk '{ print $5 }')"
+
