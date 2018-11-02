@@ -1,2 +1,15 @@
+- name: Remove /etc/resolv.conf
+  file:
+    dest: /etc/resolv.conf
+    state: absent
+  listen: Make /etc/resolv.conf a regular file
+
+- name: Create empty /etc/resolv.conf
+  file:
+    dest: /etc/resolv.conf
+    state: touch
+  listen: Make /etc/resolv.conf a regular file
+
 - name: Relabel /etc/resolv.conf
   command: restorecon -Rv /etc/resolv.conf
+  listen: Make /etc/resolv.conf a regular file

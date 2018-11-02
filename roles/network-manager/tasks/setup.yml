@@ -8,14 +8,14 @@
 #  tags:
 #    - systemd-networkd
 
-- name: Make /etc/resolv.conf a regular file
-  file:
-    dest: /etc/resolv.conf
-    state: file
+- name: Make sure /etc/resolv.conf is a regular file
+  stat: path=/etc/resolv.conf
+  register: links
+  changed_when: links.stat.islnk is defined and links.stat.islnk
+  notify:
+    - Make /etc/resolv.conf a regular file
   tags:
     - network-manager
-  notify:
-    - Relabel /etc/resolv.conf
 
 - name: Enable NetworkManager
   systemd:
